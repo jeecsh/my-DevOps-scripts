@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Exit script if any command fails
+set -e
+
+# Get the current branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Check if there are changes to commit
+if [[ -n $(git status --porcelain) ]]; then
+    # Get commit message from argument or use a timestamp
+    COMMIT_MSG=${1:-"Auto commit: $(date +'%Y-%m-%d %H:%M:%S')"}
+    
+    echo "Staging changes..."
+    git add .
+    
+    echo "Committing changes..."
+    git commit -m "$COMMIT_MSG"
+    
+    echo "Pushing to branch '$BRANCH'..."
+    git push origin "$BRANCH"
+    
+    echo "Git automation completed!"
+else
+    echo "No changes to commit."
+fi
+
